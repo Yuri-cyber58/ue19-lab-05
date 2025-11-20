@@ -14,7 +14,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # Nécessaire pour l'authentification et l'écriture sur GitHub Packages
     permissions:
       contents: read
       packages: write 
@@ -39,9 +38,10 @@ jobs:
         with:
           context: .
           push: true
-          # CORRECTION : Suppression de la partie '| lowercase' pour corriger la syntaxe YAML
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # CORRECTION : Utilisation de la syntaxe simple de tags pour éviter l'erreur '|' 
+          # et ajout du filtre | lowercase pour gérer les majuscules du nom d'utilisateur.
+          tags:
+            ghcr.io/${{ github.repository_owner | lowercase }}/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ github.repository_owner | lowercase }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
